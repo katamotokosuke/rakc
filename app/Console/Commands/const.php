@@ -27,10 +27,6 @@ class Prefecture{
             $this->pref_num = self::TOKUSHIMA;
             $this->option_file = 'tokushima';
             $this->option = 'pref';
-        }elseif($this->prefecture == ''){
-            $this->pref_num = '';
-            $this->option ='none';
-            $this->option_file = 'all';
         }else{
             echo '--prefオプションの入力に誤りがあります。';
             return;
@@ -57,10 +53,12 @@ class Types{
             $this->option_file = 'oneCondominium';
         }elseif($this->props == "1棟アパート"){
             $this->prop_num = Types::oneApartment;
-        }elseif($this->props == ''){
-            $this->prop_num = '';
             $this->option = 'prop';
             $this->option_file = 'oneApartment';
+        }elseif($this->props == ''){
+            $this->prop_num = '';
+            $this->option = 'none';
+            $this->option_file = 'all';
         }else{
             echo '--propオプションの入力に誤りがあります。';
             return;

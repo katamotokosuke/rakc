@@ -52,7 +52,6 @@ class Rakumachi extends Command
         $price = $this->option('price');
         $yield = $this->option('yield');
 
-        //URLの値を当てはめる
         //別ファイルの都道府県番号振り分け関数を実施
         $pft = new Prefecture();
         $pft->prefecture = $pref;
@@ -94,19 +93,27 @@ class Rakumachi extends Command
         $yields = array();
 
 
+        if(isset($pft->option)){
+            $option = $pft->option;
+            $option_file = $pft->option_file;
+        }elseif(isset($proop->option)){
+            $option = $proop->option;
+            $option_file = $proop->option_file;
+        }elseif($pref == '' && $prop == '' && $yield == '' && $price == ''){
+            $option = 'none';
+            $option_file = 'all';
+        }
         
         
         //ファイル作成
         $now = date("Y-m-d-H-i");
-        $file = 'C:/xampp/htdocs/laravel/rakc/files/'.$pft->option.'/'.$pft->option_file.'/crawl_'.$now.'.txt';
+        $file = 'C:/xampp/htdocs/laravel/rakc/files/'.$option.'/'.$option_file.'/crawl_'.$now.'.txt';
         $file_folder = glob('C:/xampp/htdocs/laravel/rakc/files/'.$pft->option.'/'.$pft->option_file.'/*');
         touch($file);
 
-       
-
 
         //サイトからクロール　ページネーションを巡回
-        for($page_num = 1; $page_num <= 200; $page_num++){
+        for($page_num = 1; $page_num <= 2; $page_num++){
 
             $url = self::RakumachiUrl.$page_num.'&pref='.$pft->pref_num.'&gross_from='.$yield_num.'&price_to='.$price_num.$proop->prop_num;
             $html = file_get_contents($url);
@@ -122,19 +129,19 @@ class Rakumachi extends Command
         }
 
 
+        //ファイルに書き込み
         $fh = fopen($file, "a");
         foreach(array_map(null, $dimensions, $names, $prices, $yields) as [$dimension, $name, $price, $yield]){
             fwrite($fh, $dimension.",".$name.",".$price.",".$yield."\n");
     }
 
+    //nextページボタンがなくなったらループから抜ける
     $page = phpQuery::newDocument($html)->find(".pagination .next")->text();
         if($page == ''){
             break;
         }
     
 }
-
-
 
 fclose($fh);
                  
@@ -161,7 +168,7 @@ fclose($fh);
         }
         
                 
-        
+        /*
         //LINE通知
         $channelToken = 'tFrOOXIVQ68Y2h3//fqQuU8pVnwNpc4LKEkTtUKk6wl2SJPmVJfAV48Qlt2kXlsmDcf8MB9oHVrSw8UImq2yap9uX4UlhUcw3Toefi5GTuetOMkQaYR8BQVB2ZJOeWklP+uL0E8IpSb+Ff5AjXSu8QdB04t89/1O/w1cDnyilFU=';
         $headers = [
@@ -215,7 +222,7 @@ fclose($fh);
         // 200 だったら OK
         echo $httpStatus . ' ' . $body;
        
-
+*/
         
     }
 
